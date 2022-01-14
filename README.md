@@ -4,11 +4,26 @@ React 공부용 Repository
 
 참조 : [생활코딩-React](https://www.youtube.com/playlist?list=PLuHgQVnccGMCRv6f8H9K5Xwsdyg4sFSdi)
 
+
+
 ## 목차
 
+1. [시작하기](##시작하기)
+2. [새로운 React 앱 만들기](##새로운-React-앱-만들기)
+3. [JavaScript](##JavaScript)
+4. [CSS](##CSS)
+5. [배포](##배포)
+6. [Component](##Component)
+7. [Props](Props)
+8. [Component 파일로 분리하기](##Component-파일로-분리하기)
+9. [State](##State)
+10. [Key](##Key)
+11. [state, props, render](##state,-props,-render)
+12. [event](##event)
 
 
-### 시작하기
+
+## 시작하기
 
 먼저 npm을 이용하여 `create-react-app`을 설치해야 한다.
 
@@ -28,7 +43,7 @@ npm install -g create-react-app
 
 
 
-### 새로운 React 앱 만들기
+## 새로운 React 앱 만들기
 
 React 앱을 만들고자 하는 디렉토리로 이동하여 아래와 같은 명령어를 입력한다.
 
@@ -44,12 +59,10 @@ npm start
 
 
 
-### JavaScript
-
-#### index.html
+## JavaScript
 
 ```html
-	
+<!-- index.html -->	
 	...
 
 <body>
@@ -65,9 +78,9 @@ npm start
 
 
 
-#### index.js
-
 ```javascript
+// index.js
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -92,9 +105,9 @@ reportWebVitals();
 
 
 
-#### App.js
-
 ```javascript
+// App.js
+
 import logo from './logo.svg';
 import './App.css';
 
@@ -123,6 +136,8 @@ export default App;
 
 ```
 
+
+
 그렇기 때문에 위 코드를 아래와 같이 바꿔준다면
 
 ```javas
@@ -146,11 +161,11 @@ export default App;
 
 
 
-### CSS
-
-#### index.css
+## CSS
 
 ```css
+/* index.css */
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -180,7 +195,7 @@ body{
 
 
 
-### 배포
+## 배포
 
 로컬에서 React를 실행하는 것과 같이 배포할 때도 똑같이 하게 된다면 React개발자용 파일과 같이 용량이 커지고 보안상의 문제가 발생할 수 있다. 이를 막기위해 다음과 같은 작업을 수행한다.
 
@@ -197,7 +212,7 @@ serve -s build
 
 
 
-### Component
+## Component
 
 먼저 만들고자하는 문서를 html로 만들어 보자
 
@@ -235,7 +250,7 @@ serve -s build
 
 
 
-#### Header
+### Header
 
 App.js의 코드를 다음과 같이 변경해 보자.
 
@@ -269,7 +284,7 @@ class App extends Component {
 
 
 
-#### Navbar
+### Navbar
 
 ```javascript
 class Navbar extends Component {
@@ -289,7 +304,7 @@ class Navbar extends Component {
 
 
 
-#### Article
+### Article
 
 ```javascript
 class Article extends Component {
@@ -306,7 +321,7 @@ class Article extends Component {
 
 
 
-#### App
+### App
 
 ```javascript
 class App extends Component {
@@ -326,7 +341,7 @@ class App extends Component {
 
 ![image-20220112160628312](README.assets/image-20220112160628312.png)
 
-### Props
+## Props
 
 `App`에서 각 클래스의 값을 변경시켜 주어 사용하고 싶다. 이러한 경우 사용하는 것이 `Props`이다.
 
@@ -380,7 +395,7 @@ class App extends Component {
 
 
 
-### Component 파일로 분리하기
+## Component 파일로 분리하기
 
 이렇게 작성을 하게 되면 `App.js`파일에 작성된 내용이 너무 많아진다. 그리고 기능적으로 다른 컴포넌트들이 한꺼번에 있어 알아보기도 쉽지 않고 유지 보수가 힘들어진다. 이를 위해서 컴포넌트 폴더를 따로 생성하여 분리시켜 준다.
 
@@ -390,9 +405,9 @@ class App extends Component {
 
 그리고 각 파일들을 이렇게 작성해 준다.
 
-#### Header.js
-
 ```javascript
+// Header.js
+
 import React, { Component } from 'react';
 
 
@@ -412,9 +427,9 @@ export default Header;
 
 
 
-#### Navbar.js
-
 ```javascript
+// Navbar.js
+
 import React, { Component } from 'react';
 
 
@@ -437,9 +452,9 @@ export default Navbar;
 
 
 
-#### Article.js
-
 ```javascript
+// Article.js
+
 import React, { Component } from 'react';
 
 
@@ -459,9 +474,9 @@ export default Article;
 
 
 
-#### App.js
-
 ```javascript
+// App.js
+
 import React, { Component } from 'react';
 import Header from "./components/Navbar"
 import Navbar from "./components/Navbar"
@@ -489,7 +504,7 @@ export default App;
 
 
 
-### State
+## State
 
 앱이 내부적으로 사용하는 구조를 갖기 위해서 상위 컴포넌트의 `state`를 하위 컴포넌트의 `props`로 데이터를 전달해 준다. 아래와 같이 수정해 줄 수 있다.
 
@@ -521,7 +536,7 @@ class App extends Component {
 
 
 
-### Key
+## Key
 
 `Navbar`도 변경해 보자. 리스트로 여러가지의 데이터를 받고 있기 때문에 주의해야 할 점이 있다. 각 리스트에 `key`값을 주어 React 내부에서 처리가 원활하도록 하자.
 
@@ -578,7 +593,7 @@ class Navbar extends Component {
 
 
 
-### state, props, render
+## state, props, render
 
 이번에는 위의 모든 기능을 활용해 보자. 부모 컴포넌트의 `state`값에 따라 다른 데이터를 `props`로 받아와 `render`하는 실습을 해 보았다.
 
@@ -625,13 +640,13 @@ class App extends Component {
 
 `render`함수와 `state`를 살펴 보면 `state.mode`값에 따라 다른 데이터를 받아와 props에 건네 주는 것을 알 수 있다.
 
-#### welcome
+
 
 ![image-20220113112519018](README.assets/image-20220113112519018.png)
 
 `state.mode`가 welcome인 경우 state 내부의 welcome의 title과 desc를 각각 받아와 `props`에 건네준다. 따라서 위와 같은 화면이 출력된다.
 
-#### read
+
 
 ![image-20220113112506404](README.assets/image-20220113112506404.png)
 
@@ -639,5 +654,5 @@ class App extends Component {
 
 
 
-### event
+## event
 
