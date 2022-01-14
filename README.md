@@ -8,18 +8,18 @@ React 공부용 Repository
 
 ## 목차
 
-1. [시작하기](##시작하기)
-2. [새로운 React 앱 만들기](##새로운-React-앱-만들기)
-3. [JavaScript](##JavaScript)
-4. [CSS](##CSS)
-5. [배포](##배포)
-6. [Component](##Component)
-7. [Props](Props)
-8. [Component 파일로 분리하기](##Component-파일로-분리하기)
-9. [State](##State)
-10. [Key](##Key)
-11. [state, props, render](##state,-props,-render)
-12. [event](##event)
+1. [시작하기](#시작하기)
+2. [새로운 React 앱 만들기](#새로운-React-앱-만들기)
+3. [JavaScript](#JavaScript)
+4. [CSS](#CSS)
+5. [배포](#배포)
+6. [Component](#Component)
+7. [Props](#Props)
+8. [Component 파일로 분리하기](#Component-파일로-분리하기)
+9. [State](#State)
+10. [Key](#Key)
+11. [state, props, render](#state,-props,-render)
+12. [event](#event)
 
 
 
