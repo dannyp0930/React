@@ -40,7 +40,7 @@ npm start
 
 성공적으로 작업하였다면 아래와 같은 화면이 나올 것이다.
 
-![image-20220112143159976](React.assets/image-20220112143159976.png)
+![image-20220112143159976](README.assets/image-20220112143159976.png)
 
 
 
@@ -140,7 +140,7 @@ export default App;
 
 ```
 
-![image-20220112145132293](React.assets/image-20220112145132293.png)
+![image-20220112145132293](README.assets/image-20220112145132293.png)
 
 이처럼 조작할 수 있다.
 
@@ -176,7 +176,7 @@ body{
 
 위 처럼 수정한다면 아래와 같이 변경됨을 알 수 있다.
 
-![image-20220112145639436](React.assets/image-20220112145639436.png)
+![image-20220112145639436](README.assets/image-20220112145639436.png)
 
 
 
@@ -229,7 +229,7 @@ serve -s build
 
 위와 같은 코드를 실행한다면 아래와 같은 모습의 웹페이지를 기대할 수 있다.
 
-![image-20220112155717655](React.assets/image-20220112155717655.png)
+![image-20220112155717655](README.assets/image-20220112155717655.png)
 
 이를 컴포넌트를 이용해 바꾸어 보자.
 
@@ -265,7 +265,7 @@ class App extends Component {
 
 `Subject`라는 클래스 함수를 생성하여 기존의 html에서 header부분을 렌더링 하도록 만들자. 그리고 그 `Subject` 클래스 함수를 `App` 클래스 함수에서 렌더링 할 수 있도록 해주면 다음과 같은 결과를 만들 수 있다.
 
-![image-20220112155929160](React.assets/image-20220112155929160.png)
+![image-20220112155929160](README.assets/image-20220112155929160.png)
 
 
 
@@ -324,7 +324,7 @@ class App extends Component {
 
 마찬가지로 각 클래스를 생성하고 `App`클래스를 수정해 주면 html로 작성한 화면과 동일한 페이지를 얻을 수 있다.
 
-![image-20220112160628312](React.assets/image-20220112160628312.png)
+![image-20220112160628312](README.assets/image-20220112160628312.png)
 
 ### Props
 
@@ -374,7 +374,7 @@ class App extends Component {
 }
 ```
 
-![image-20220112162822332](React.assets/image-20220112162822332.png)
+![image-20220112162822332](README.assets/image-20220112162822332.png)
 
 이러한 결과를 얻을 수 있다.
 
@@ -384,7 +384,7 @@ class App extends Component {
 
 이렇게 작성을 하게 되면 `App.js`파일에 작성된 내용이 너무 많아진다. 그리고 기능적으로 다른 컴포넌트들이 한꺼번에 있어 알아보기도 쉽지 않고 유지 보수가 힘들어진다. 이를 위해서 컴포넌트 폴더를 따로 생성하여 분리시켜 준다.
 
-![image-20220112165132548](React.assets/image-20220112165132548.png)
+![image-20220112165132548](README.assets/image-20220112165132548.png)
 
 
 
@@ -627,13 +627,13 @@ class App extends Component {
 
 #### welcome
 
-![image-20220113112519018](React.assets/image-20220113112519018.png)
+![image-20220113112519018](README.assets/image-20220113112519018.png)
 
 `state.mode`가 welcome인 경우 state 내부의 welcome의 title과 desc를 각각 받아와 `props`에 건네준다. 따라서 위와 같은 화면이 출력된다.
 
 #### read
 
-![image-20220113112506404](React.assets/image-20220113112506404.png)
+![image-20220113112506404](README.assets/image-20220113112506404.png)
 
 `state.mode`가 read인 경우 state 내부의 articles의 0번째의 title과 desc를 각각 받아와 `props`에 건네준다. 따라서 위와 같은 화면이 출력된다. 이 경우에는 동적으로 변환시켜 navbar의 링크를 클릭할 때 다르게 변화를 해줄 수 있겠다.
 
