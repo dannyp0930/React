@@ -650,9 +650,39 @@ class App extends Component {
 
 ![image-20220113112506404](README.assets/image-20220113112506404.png)
 
-`state.mode`가 read인 경우 state 내부의 articles의 0번째의 title과 desc를 각각 받아와 `props`에 건네준다. 따라서 위와 같은 화면이 출력된다. 이 경우에는 동적으로 변환시켜 navbar의 링크를 클릭할 때 다르게 변화를 해줄 수 있겠다.
+`state.mode`가 read인 경우 state 내부의 articles의 0번째의 title과 desc를 각각 받아와 `props`에 건네준다. 따라서 위와 같은 화면이 출력된다. 이 경우에는 동적으로 변환시켜 navbar의 링크를 클릭할 때 변화를 줄 수 있겠다.
 
 
 
 ## event
 
+`event`를 이용하여 state를 변경해 보자.
+
+```javascript
+// App.js
+
+return (
+      <div className="App">
+        <header>
+          <h1><a href="/" onClick={function(event) {
+            console.log(event);
+            event.preventDefault();
+            this.setState({
+              mode:'welcome'
+            });
+          }.bind(this)}>{this.state.header.title}</a></h1>
+          {this.state.header.sub}
+        </header>
+        <Navbar data={this.state.articles}/>
+        <Article title={_title} desc={_desc}/>
+      </div>
+    );
+```
+
+`header`에 `onClick` event가 발생 했을 때 변화를 주게 하였다. `this.setState()` 함수로 현재 state를 변경시키고 `.bind(this)`로 묶어 준다.
+
+![image-20220115193925477](README.assets/image-20220115193925477.png)
+
+웹 페이지에서 WEB 부분을 클릭하면 state가 변화하여 다음과 같이 바뀐다.
+
+![image-20220115193959305](README.assets/image-20220115193959305.png)

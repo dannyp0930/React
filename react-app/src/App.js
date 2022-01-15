@@ -9,7 +9,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode: 'welcome',
+      mode: 'read',
       header: {title:'WEB', sub:'World Wide Web!'},
       welcome: {title:'Welcome', desc:'Hello, React!!'},
       articles:[
@@ -39,7 +39,11 @@ class App extends Component {
           <h1><a href="/" onClick={function(event) {
             console.log(event);
             event.preventDefault();
-          }}>{this.state.header.title}</a></h1>
+            // this.state.mode = 'welcome';
+            this.setState({
+              mode:'welcome'
+            });
+          }.bind(this)}>{this.state.header.title}</a></h1>
           {this.state.header.sub}
         </header>
         <Navbar data={this.state.articles}/>
