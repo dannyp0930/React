@@ -20,6 +20,7 @@ React 공부용 Repository
 10. [Key](#Key)
 11. [state, props, render](#state,-props,-render)
 12. [event](#event)
+12. [component event](#component-event)
 
 
 
@@ -686,3 +687,132 @@ return (
 웹 페이지에서 WEB 부분을 클릭하면 state가 변화하여 다음과 같이 바뀐다.
 
 ![image-20220115193959305](README.assets/image-20220115193959305.png)
+
+
+
+## component event
+
+event 또한 사용자가  컴포넌트로 만들 수 있다. 한번 시도해 보자.
+
+```javascript
+// Header.js
+
+class Header extends Component {
+  render () {
+    console.log('Header render')
+    return (
+      <header>
+        <h1><a href="/" onClick={function (event) {
+          event.preventDefault();
+          this.props.onChangePage();
+        }.bind(this)}>{this.props.title}</a></h1>
+        {this.props.sub}
+      </header>
+    );
+  }
+}
+```
+
+`Header`에 `onClick` 이벤트가 발생하면 `onChangePage` 함수를 호출하도록 한다. 이 함수는 `App.js`에서 페이지를 바꿔주는 역할을 할 것이다.
+
+
+
+```javascript
+// App.js
+
+<Header 
+title={this.state.header.title}
+sub={this.state.header.sub}
+onChangePage={function () {
+    this.setState({mode:'welcome'});
+}.bind(this)}
+/>
+```
+
+`Header` 컴포넌트 부분만 살펴보면 `onChangePage` 함수가 실행되면 state의 mode를 `welcome`으로 변경시킨다. 이렇게 컴포넌트 이벤트를 만들 수 있다. 이제 한번 `Navbar`도 변경해 보자.
+
+
+
+```javascript
+// Navbar.js
+
+while(i < data.length) {
+  lists.push(
+  	<li key={data[i].id}>
+  	  <a
+      	href={"/content/"+data[i].id}
+      	onClick={function (id, event) {
+        	event.preventDefault();
+            this.props.onChangePage(id);
+        }.bind(this, data[i].id)}
+      >{data[i].title}</a>
+    </li>
+  );
+  i = i + 1;
+}
+```
+
+`Navbar` 컴포넌트의 while 부분만 따로 보면, 각 요소를 클릭했을 때 `onChangePage` 이벤트를 호출하도록 설정하였다. 이 때 Navbar의 각 요소의 id 값을 App에 전달 하기 위해서 bind 함수에 묶어서 보내 줄 수 있다.
+
+
+
+```javascript
+// App.js
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: 'welcome',
+      selected_article_id: 0,
+      header: {title:'WEB', sub:'World Wide Web!'},
+      welcome: {title:'Welcome', desc:'Hello, React!!'},
+      articles:[
+        {id:0, title:'HTML', desc:'HTML is HyperText Markup Language.'},
+        {id:1, title:'CSS', desc:'CSS is for desgin.'},
+        {id:2, title:'JavaScript', desc:'JavaScript is for interactive.'},
+      ]
+    }
+  }
+
+```
+
+먼저 state부분을 살펴보면 `selected_article_id`라는 요소를 하나 만들어 두고 기본값으로 0으로 한다. 이 요소는 선택된 id값을 저장하기 위함이다. 또 각 id를 0부터 시작하게 하여 article의 인덱스와 일치시킨다.
+
+
+
+```javascript
+  render () {
+    var _title, _desc = null;
+    if (this.state.mode === 'welcome') {
+      
+      ...
+      
+    } else if (this.state.mode === 'read') {
+      var i = this.state.selected_article_id
+      _title = this.state.articles[i].title
+      _desc = this.state.articles[i].desc
+    }
+    return (
+      <div className="App">
+		
+        ...
+        
+        <Navbar
+          onChangePage={function (id) {
+            this.setState({
+              mode:'read',
+              selected_article_id: Number(id)
+            });
+          }.bind(this)}
+          data={this.state.articles}
+        />
+        <Article title={_title} desc={_desc}/>
+      </div>
+    );
+  }
+}
+```
+
+렌더링 되는 부분을 살펴보자. 먼저 `Navbar` 컴포넌트를 보면 state의 mode값이 `read`로 바뀌고 `selected_article_id` 값을 자식 컴포넌트에서 받아온 id값이 숫자형으로 변환되어 저장한다. 이제 위의 if문을 보자. 선택된 id 값을 `변수 i` 에 저장하고 그 인덱스에 맞는 title과 desc를 저장하여 `Article` 컴포넌트에 전달해 주면 우리가 원하는 기능이 완성된다.
+
