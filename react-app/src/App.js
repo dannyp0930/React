@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import Header from "./components/Header"
 import Navbar from "./components/Navbar"
-import Article from "./components/Article"
+import ReadArticle from "./components/ReadArticle"
+import CreateArticle from "./components/CreateArticle"
+// import UpdateArticle from "./components/UpdateArticle"
+// import Deleterticle from "./components/DeleteArticle"
+import Control from "./components/Control"
 import './App.css';
 
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.max_content_id = 2;
     this.state = {
-      mode: 'welcome',
-      selected_article_id: 0,
+      mode: 'create',
+      id: 0,
       header: {title:'WEB', sub:'World Wide Web!'},
       welcome: {title:'Welcome', desc:'Hello, React!!'},
       articles:[
@@ -21,14 +26,25 @@ class App extends Component {
     }
   }
   render () {
-    var _title, _desc = null;
+    var _title, _desc, _article = null;
     if (this.state.mode === 'welcome') {
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
+      _article = <ReadArticle title={_title} desc={_desc}/>
     } else if (this.state.mode === 'read') {
-      var i = this.state.selected_article_id
-      _title = this.state.articles[i].title
-      _desc = this.state.articles[i].desc
+      _title = this.state.articles[this.state.id].title
+      _desc = this.state.articles[this.state.id].desc
+      _article = <ReadArticle title={_title} desc={_desc}/>
+    } else if (this.state.mode === 'create') {
+      _article = <CreateArticle onSubmit={function (_title, _desc) {
+        this.max_content_id += 1;
+        var _articles = this.state.articles.concat(
+          {id: this.max_content_id, title:_title, desc:_desc}
+        )
+        this.setState({
+          articles:_articles
+        });
+      }.bind(this)}/>
     }
     return (
       <div className="App">
@@ -43,12 +59,17 @@ class App extends Component {
           onChangePage={function (id) {
             this.setState({
               mode:'read',
-              selected_article_id: Number(id)
+              id: Number(id)
             });
           }.bind(this)}
           data={this.state.articles}
         />
-        <Article title={_title} desc={_desc}/>
+        <Control onChangeMode={function (mode) {
+          this.setState({
+            mode:mode
+          });
+        }.bind(this)}/>
+        {_article}
       </div>
     );
   }

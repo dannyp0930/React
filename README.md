@@ -764,7 +764,7 @@ class App extends Component {
     super(props);
     this.state = {
       mode: 'welcome',
-      selected_article_id: 0,
+      id: 0,
       header: {title:'WEB', sub:'World Wide Web!'},
       welcome: {title:'Welcome', desc:'Hello, React!!'},
       articles:[
@@ -789,9 +789,8 @@ class App extends Component {
       ...
       
     } else if (this.state.mode === 'read') {
-      var i = this.state.selected_article_id
-      _title = this.state.articles[i].title
-      _desc = this.state.articles[i].desc
+      _title = this.state.articles[this.state.id].title
+      _desc = this.state.articles[this.state.id].desc
     }
     return (
       <div className="App">
@@ -802,7 +801,7 @@ class App extends Component {
           onChangePage={function (id) {
             this.setState({
               mode:'read',
-              selected_article_id: Number(id)
+              id: Number(id)
             });
           }.bind(this)}
           data={this.state.articles}
@@ -814,5 +813,238 @@ class App extends Component {
 }
 ```
 
-렌더링 되는 부분을 살펴보자. 먼저 `Navbar` 컴포넌트를 보면 state의 mode값이 `read`로 바뀌고 `selected_article_id` 값을 자식 컴포넌트에서 받아온 id값이 숫자형으로 변환되어 저장한다. 이제 위의 if문을 보자. 선택된 id 값을 `변수 i` 에 저장하고 그 인덱스에 맞는 title과 desc를 저장하여 `Article` 컴포넌트에 전달해 주면 우리가 원하는 기능이 완성된다.
+렌더링 되는 부분을 살펴보자. 먼저 `Navbar` 컴포넌트를 보면 state의 mode값이 `read`로 바뀌고 `id` 값을 자식 컴포넌트에서 받아온 id값이 숫자형으로 변환되어 저장한다. 이제 위의 if문을 보자. 선택된 id 값을 `변수 i` 에 저장하고 그 인덱스에 맞는 title과 desc를 저장하여 `Article` 컴포넌트에 전달해 주면 우리가 원하는 기능이 완성된다.
 
+
+
+## create
+
+먼저 control 컴포넌트를 생성하여 `App.js`에 추가하자.
+
+```javascript
+// Control.js
+
+import React, { Component } from 'react';
+
+
+class Control extends Component {
+  render () {
+    return (
+      <ul>
+        <li>
+          <a 
+            href="/create"
+            onClick={function (event) {
+              event.preventDefault();
+              this.props.onChangeMode('create');
+            }.bind(this)}
+          >create</a>
+        </li>
+        <li>
+          <a 
+            href="/update"
+            onClick={function (event) {
+              event.preventDefault();
+              this.props.onChangeMode('update');
+            }.bind(this)}
+          >update</a>
+        </li>
+        <li>
+          <input
+            type="button"
+            value="delete"
+            onClick={function (event) {
+              event.preventDefault();
+              this.props.onChangeMode('delete');
+            }.bind(this)}
+          />
+        </li>
+      </ul>
+    );
+  }
+}
+
+export default Control;
+
+// App.js
+
+...
+
+import Control from "./components/Control"
+
+...
+
+return (
+	
+    ...
+    
+    <Control onChangeMode={function (mode) {
+      this.setState({
+        mode:mode
+      });
+    }.bind(this)}/>
+    
+    ...
+    
+)
+    
+...
+```
+
+이와 같이 설정하면 create, update, delete 버튼을 누를 때 마다 state의 mode의 값이 변경된다.
+
+![image-20220117145122750](README.assets/image-20220117145122750.png)
+
+
+
+이를 한번 mode 전환에 따라 다른 렌더링으로 바꾸어 보자. 먼저 `Article` 컴포넌트의 이름을 `ReadArticle`로 바꾸고, `CreateArticle` 컴포넌트를 생성하자.
+
+```javascript
+// CreateArticle.js
+
+import React, { Component } from 'react';
+
+
+class CreateArticle extends Component {
+  render () {
+    return (
+      <article>
+        <h2>Create</h2>
+        <form>
+
+        </form>
+      </article>
+    );
+  }
+}
+
+export default CreateArticle;
+
+// App.js
+
+...
+
+import ReadArticle from "./components/ReadArticle"
+import CreateArticle from "./components/CreateArticle"
+import Control from "./components/Control"
+
+...
+
+
+class App extends Component {
+  constructor(props) {
+	
+    ...
+      
+  }
+  render () {
+    var _title, _desc, _article = null;
+    if (this.state.mode === 'welcome') {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+      _article = <ReadArticle title={_title} desc={_desc}/>
+    } else if (this.state.mode === 'read') {
+      _title = this.state.articles[this.state.id].title
+      _desc = this.state.articles[this.state.id].desc
+      _article = <ReadArticle title={_title} desc={_desc}/>
+    } else if (this.state.mode === 'create') {
+      _article = <CreateArticle/>
+    }
+    return (
+      <div className="App">
+        <Header 
+		
+          ...
+        
+        <Control onChangeMode={function (mode) {
+          this.setState({
+            mode:mode
+          });
+        }.bind(this)}/>
+        {_article}
+      </div>
+    );
+  }
+}
+
+export default App;
+
+```
+
+위와 같이 설정해 주면 state의 mode 값에 따라 `_article`값이 변경되어 다르게 렌더링을 해 줄 수 있다.
+
+![image-20220117154544964](README.assets/image-20220117154544964.png)
+
+
+
+이제 `CreateArticle` 컴포넌트를 완성해 보자.
+
+```javascript
+// CreateArticle.js
+
+		...
+
+        <form
+          action="/create"
+          method="POST"
+          onSubmit={function (event) {
+            event.preventDefault();
+            this.props.onSubmit(
+              event.target.title.value,
+              event.target.desc.value
+            );
+          }.bind(this)}
+        >
+          <p><input type="text" name="title" placeholder="title"/></p>
+          <p>
+            <textarea name="desc" placeholder="description"/>
+          </p>
+          <p><input type="submit"/></p>
+        </form>
+
+		...
+        
+```
+
+`form` 태그에 action, method를 설정해준다. `create`이기 때문에 알맞은 요청으로 `POST`로 한다. 제출 했을때의 동작을 수행해줄 `onSubmit` 이벤트를 작성한다.  form 안에 들어갈 여러 `p`태그들의 name에 따라 알맞는 데이터를 `props`로 전송하면 된다.
+
+이제 `App.js`의 렌더링을 변경해 보자.
+
+```javascript
+// App.js
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.max_content_id = 2;
+    this.state = {
+      
+      ...
+     
+    }
+  }
+  render () {
+    var _title, _desc, _article = null;
+		
+      ...
+    
+    } else if (this.state.mode === 'create') {
+      _article = <CreateArticle onSubmit={function (_title, _desc) {
+        this.max_content_id += 1;
+        var _articles = this.state.articles.concat(
+          {id: this.max_content_id, title:_title, desc:_desc}
+        )
+        this.setState({
+          articles:_articles
+        });
+      }.bind(this)}/>
+    }
+```
+
+먼저 `constructor`에 `max_content_id` 값을 초기화 해 주자. 이 값은 현재 `articles`의 마지막 `id`값을 의미한다. 이 값을 새로운 article이 생성 될 때 마다 1씩 증가 시켜 준다. 그리고 입력된 값을 받아와서 `concat`함수로 새로운 `_articles`로 만들어 state에 저장해 준다. 이렇게 하면 다음과 같이 동작을 수행할 수 있다.
+
+![image-20220117164016231](README.assets/image-20220117164016231.png)
+
+
+
+![image-20220117164110978](README.assets/image-20220117164110978.png)
