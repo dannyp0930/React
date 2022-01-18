@@ -4,7 +4,6 @@ import Navbar from "./components/Navbar"
 import ReadArticle from "./components/ReadArticle"
 import CreateArticle from "./components/CreateArticle"
 import UpdateArticle from "./components/UpdateArticle"
-// import Deleterticle from "./components/DeleteArticle"
 import Control from "./components/Control"
 import './App.css';
 
@@ -14,7 +13,7 @@ class App extends Component {
     super(props);
     this.max_content_id = 2;
     this.state = {
-      mode: 'create',
+      mode: 'welcome',
       id: 0,
       header: {title:'WEB', sub:'World Wide Web!'},
       welcome: {title:'Welcome', desc:'Hello, React!!'},
@@ -81,9 +80,20 @@ class App extends Component {
           data={this.state.articles}
         />
         <Control onChangeMode={function (mode) {
-          this.setState({
-            mode:mode
-          });
+          if (mode === 'delete') {
+            var _articles =  Array.from(this.state.articles);
+            if (window.confirm('삭제 하시겠습니까?')) {
+              _articles.splice(this.state.id, 1);
+            }
+            this.setState({
+              mode: 'welcome',
+              articles: _articles
+            })
+          } else {
+            this.setState({
+              mode:mode
+            });
+          }
         }.bind(this)}/>
         {this.getArticle()}
       </div>

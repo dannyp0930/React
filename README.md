@@ -23,6 +23,8 @@ React 공부용 Repository
 12. [component event](#component-event)
 12. [create](#create)
 12. [update](#update)
+12. [delete](#delete)
+12. [마치며](#마치며)
 
 
 
@@ -1237,3 +1239,42 @@ class App extends Component {
 
 ![image-20220118181842720](README.assets/image-20220118181842720.png)
 
+
+
+## delete
+
+삭제과정은 매우 간단하다. 따로 컴포넌트를 만들 필요 없이 `App.js`에서 처리만 해주면 된다.
+
+```javascript
+// App.js
+
+		...
+
+        <Control onChangeMode={function (mode) {
+          if (mode === 'delete') {
+            var _articles =  Array.from(this.state.articles);
+            if (window.confirm('삭제 하시겠습니까?')) {
+              _articles.splice(this.state.id, 1);
+            }
+            this.setState({
+              mode: 'welcome',
+              articles: _articles
+            })
+          } else {
+            this.setState({
+              mode:mode
+            });
+          }
+        }.bind(this)}/>
+
+		...
+        
+```
+
+`Control` 컴포넌트를 보자. mode의 값이 `delete`일 때와 아닐 때를 구분하여 수행한다. 아닐 경우에는 기존의 과정을 따르면 된다. 먼저 `_articles`에 기존의 요소를 복하하여 놓고 `window.confirm()` 명령어로 window 확인창을 띄우자. 괄호 안에 메시지를 입력할 수 있다. 다음으로 `.splice(시작 인덱스, 개수)` 명령어로 요소를 삭제해 준다. state의 모드와 articles를 저장해 주면 끝이난다.
+
+
+
+## 마치며
+
+React를 통해 CRUD 작업까지 실습해 보았다. Vue.js와 비슷하면서도 달라 재밌게 학습할 수 있었다. 현업에서 훨씬 더 많이 사용되는 만큼 추가적인 공부를 하면서 마스터 할 수 있도록 노력해야 겠다.
