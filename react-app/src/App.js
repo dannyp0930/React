@@ -3,7 +3,7 @@ import Header from "./components/Header"
 import Navbar from "./components/Navbar"
 import ReadArticle from "./components/ReadArticle"
 import CreateArticle from "./components/CreateArticle"
-// import UpdateArticle from "./components/UpdateArticle"
+import UpdateArticle from "./components/UpdateArticle"
 // import Deleterticle from "./components/DeleteArticle"
 import Control from "./components/Control"
 import './App.css';
@@ -25,7 +25,7 @@ class App extends Component {
       ]
     }
   }
-  render () {
+  getArticle() {
     var _title, _desc, _article = null;
     if (this.state.mode === 'welcome') {
       _title = this.state.welcome.title;
@@ -42,10 +42,26 @@ class App extends Component {
           {id: this.max_content_id, title:_title, desc:_desc}
         )
         this.setState({
-          articles:_articles
+          articles:_articles,
+          mode: 'read',
+          id: this.max_content_id
         });
       }.bind(this)}/>
+    } else if (this.state.mode === 'update') {
+      var _data = this.state.articles[this.state.id];
+      _article = <UpdateArticle data={_data} onSubmit={
+        function (_id, _title, _desc) {
+          var _articles = Array.from(this.state.articles);
+          _articles[_id] = {id: _id, title: _title, desc: _desc};
+          this.setState({
+            articles:_articles,
+            mode: 'read'
+          });
+        }.bind(this)}/>
     }
+    return _article;
+  }
+  render () {
     return (
       <div className="App">
         <Header 
@@ -69,7 +85,7 @@ class App extends Component {
             mode:mode
           });
         }.bind(this)}/>
-        {_article}
+        {this.getArticle()}
       </div>
     );
   }

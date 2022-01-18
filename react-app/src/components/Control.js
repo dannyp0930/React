@@ -12,7 +12,7 @@ class Control extends Component {
               event.preventDefault();
               this.props.onChangeMode('create');
             }.bind(this)}
-          >create</a>
+          >Create</a>
         </li>
         <li>
           <a 
@@ -21,12 +21,12 @@ class Control extends Component {
               event.preventDefault();
               this.props.onChangeMode('update');
             }.bind(this)}
-          >update</a>
+          >Update</a>
         </li>
         <li>
           <input
             type="button"
-            value="delete"
+            value="Delete"
             onClick={function (event) {
               event.preventDefault();
               this.props.onChangeMode('delete');

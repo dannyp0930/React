@@ -21,6 +21,8 @@ React 공부용 Repository
 11. [state, props, render](#state,-props,-render)
 12. [event](#event)
 12. [component event](#component-event)
+12. [create](#create)
+12. [update](#update)
 
 
 
@@ -1043,8 +1045,195 @@ class App extends Component {
 
 먼저 `constructor`에 `max_content_id` 값을 초기화 해 주자. 이 값은 현재 `articles`의 마지막 `id`값을 의미한다. 이 값을 새로운 article이 생성 될 때 마다 1씩 증가 시켜 준다. 그리고 입력된 값을 받아와서 `concat`함수로 새로운 `_articles`로 만들어 state에 저장해 준다. 이렇게 하면 다음과 같이 동작을 수행할 수 있다.
 
+
+
 ![image-20220117164016231](README.assets/image-20220117164016231.png)
 
 
 
 ![image-20220117164110978](README.assets/image-20220117164110978.png)
+
+
+
+## update
+
+`create`와 마찬가지로 `update` 컴포넌트 또한 똑같이 만들어 주자. 기본 틀을 완성하였으면 기능을 구현하기 전에 렌더링의 if else 구문을 함수로 만들어 주자.
+
+```javascript
+// App.js
+
+  getArticle() {
+    var _title, _desc, _article = null;
+    if (this.state.mode === 'welcome') {
+      _title = this.state.welcome.title;
+      _desc = this.state.welcome.desc;
+      _article = <ReadArticle title={_title} desc={_desc}/>
+    } else if (this.state.mode === 'read') {
+      _title = this.state.articles[this.state.id].title
+      _desc = this.state.articles[this.state.id].desc
+      _article = <ReadArticle title={_title} desc={_desc}/>
+    } else if (this.state.mode === 'create') {
+      _article = <CreateArticle onSubmit={function (_title, _desc) {
+        this.max_content_id += 1;
+        var _articles = this.state.articles.concat(
+          {id: this.max_content_id, title:_title, desc:_desc}
+        )
+        this.setState({
+          articles:_articles
+        });
+      }.bind(this)}/>
+    } else if (this.state.mode === 'update') {
+      _article = <UpdateArticle onSubmit={function (_title, _desc) {
+        this.max_content_id += 1;
+        var _articles = this.state.articles.concat(
+          {id: this.max_content_id, title:_title, desc:_desc}
+        )
+        this.setState({
+          articles:_articles
+        });
+      }.bind(this)}/>
+    }
+    return _article;
+  }
+
+	...
+  
+  render() {
+      return (
+        
+        ...
+          
+        {this.getArticle()}
+		
+		...
+        
+      );
+    }
+```
+
+이렇게 해주면 `getArticle` 함수만 수정하여 렌더링을 바꿔줄 수 있다. 유지 보수가 쉽다는 장점도 있다.
+
+이제 `UpdateArticle` 컴포넌트를 작성해 보자.
+
+```javascript
+import React, { Component } from 'react';
+
+
+class UpdateArticle extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: this.props.data.id,
+      title: this.props.data.title,
+      desc: this.props.data.desc
+    }
+    this.inputFormHandler = this.inputFormHandler.bind(this)
+  }
+  inputFormHandler(event) {
+    this.setState({[event.target.name]: event.target.value});
+  }
+  render () {
+    return (
+      <article>
+        <h2>Update</h2>
+        <form
+          action="/update"
+          method="POST"
+          onSubmit={function (event) {
+            event.preventDefault();
+            this.props.onSubmit(
+              this.state.id,
+              this.state.title,
+              this.state.desc
+            );
+          }.bind(this)}
+        >
+          <input type="hidden" name="id" value={this.state.id}></input>
+          <p>
+            <input
+              type="text"
+              name="title"
+              placeholder="title"
+              value={this.state.title}
+              onChange={this.inputFormHandler}
+            />
+          </p>
+          <p>
+            <textarea
+              name="desc"
+              placeholder="description"
+              value={this.state.desc}
+              onChange={this.inputFormHandler}
+            />
+          </p>
+          <p><input type="submit"/></p>
+        </form>
+      </article>
+    );
+  }
+}
+
+export default UpdateArticle;
+```
+
+`POST`요청을 받으면 `onSubmit` 이벤트가 발생하여 `props`에 받아온 `state`값을 저장한다. 그리고 `inputFormHandler` 라는 이벤트 핸들러를 작성하고 이를 `onChange`에 입력한다. 이제 `App.js`를 최종 수정해 주자.
+
+```javascript
+// App.js
+
+class App extends Component {
+  getArticle() {
+	
+    ...
+    
+    } else if (this.state.mode === 'create') {
+      _article = <CreateArticle onSubmit={function (_title, _desc) {
+        this.max_content_id += 1;
+        var _articles = this.state.articles.concat(
+          {id: this.max_content_id, title:_title, desc:_desc}
+        )
+        this.setState({
+          articles:_articles,
+          mode: 'read',
+          id: this.max_content_id
+        });
+      }.bind(this)}/>
+    } else if (this.state.mode === 'update') {
+      var _data = this.state.articles[this.state.id];
+      _article = <UpdateArticle data={_data} onSubmit={
+        function (_id, _title, _desc) {
+          var _articles = Array.from(this.state.articles);
+          _articles[_id] = {id: _id, title: _title, desc: _desc};
+          this.setState({
+            articles:_articles,
+            mode: 'read'
+          });
+        }.bind(this)}/>
+    }
+    return _article;
+  }
+  
+  ...
+  
+```
+
+`Array.from`이라는 명령어를 사용하여 기존의 state값을 복사 해 올 수 있다. 그리고 필요한 각 요소들을 이용하여 새로운 `_articles`를 만들어 state에 저장해 준다. 그리고 mode값을 `'read'`로 변경하여 업데이트 완료된 목록을 조회할 수 있도록 한다. create도 마찬가지로 mode를 변경해 주었다.
+
+
+
+### create
+
+![image-20220118181711196](README.assets/image-20220118181711196.png)
+
+
+
+### update
+
+![image-20220118181744027](README.assets/image-20220118181744027.png)
+
+
+
+### read
+
+![image-20220118181842720](README.assets/image-20220118181842720.png)
+
