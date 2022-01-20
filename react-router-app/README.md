@@ -10,6 +10,8 @@ React Router를 학습해 보자
 1. [시작하기](#시작하기)
 1. [라우터 구성](#라우터-구성)
 1. [링크](#링크)
+1. [프로그램적 탐색](#프로그램적-탐색)
+1. [라우터가 없을 때](#라우터가-없을-때)
 
 
 
@@ -87,6 +89,8 @@ export default App;
 ![image-20220120154454936](README.assets/image-20220120154454936.png)
 
 ![image-20220120154434709](README.assets/image-20220120154434709.png)
+
+
 
 ## 링크
 
@@ -207,3 +211,102 @@ export const Navbar = () => {
 ![image-20220120163938910](README.assets/image-20220120163938910.png)
 
 이도 똑같이 작용한다. 이렇게 `NavLink`를 사용하여 활성화된 링크를 다르게 보여주어 유저편의성을 증대 시킬 수 있다.
+
+
+
+## 프로그래밍 방식 네비게이션
+
+지금까지 사용했던 선언형 방식이 아닌 프로그래밍 방식으로도 라우터를 사용할 수 있다. 한번 시도해 보자.
+
+먼저 OrderSummary 컴포넌트를 생성하여 각 컴포넌트를 아래와 같이 작성해 보자.
+
+```javascript
+// App.js
+function App() {
+  return (
+    <div>
+      <Navbar/>
+      <Routes>
+      
+      	...
+      
+        <Route path='/order-summary' element={<OrderSummary/>}/>
+      </Routes>
+    </div>
+  );
+}
+
+// Home.js
+
+import { useNavigate } from 'react-router-dom'
+
+export const Home = () => {
+  const navigate = useNavigate()
+  return (
+    <div>
+      <div>Home Page</div>
+      <button onClick={() => navigate('order-summary')}>Place order</button>
+    </div>
+  )
+}
+
+// OrderSummary.js
+
+import { useNavigate } from 'react-router-dom'
+
+export const OrderSummary = () => {
+  const navigate = useNavigate()
+  return (
+    <div>
+      <div>Order confirmed!</div>
+      <button onClick={() => navigate(-1)}>Go back</button>
+    </div>
+  )
+};
+```
+
+먼저 `App.js`에 우리가 추가할 `OrderSummary` 라우터를 작성하였다. 그리고 `Home`에는 `useNavgate`를 import하고 `Place order`버튼을 클릭하였을 때 `order-summary`라우터로 이동하도록 하였다. 이 때 navigate를 class형 함수로 선언하여 사용하였다.
+
+마찬가지로 `OrderSummary`또한 비슷하게 작성하는데 `navigate`의 인자로 `-1`을 입력하였다. 이는 온 곳으로 되돌아가라는 명령어 이다. 따라서 아래와 같이 이동하게 된다.
+
+![image-20220120210442448](README.assets/image-20220120210442448.png)
+
+![image-20220120210453647](README.assets/image-20220120210453647.png)
+
+![image-20220120210506333](README.assets/image-20220120210506333.png)
+
+
+
+## 라우터가 없을 때
+
+웹사이트를 탐색하는 경우 페이지를 찾을 수 없습니다와 같은 오류를 출력하는 페이지를 본적이 있을 것이다. 이러한 페이지를 한번 만들어 보자. `NoMatch` 컴포넌트를 생성하여 이를 표현하자.
+
+```javascript
+// App.js
+
+function App() {
+  return (
+    <div>
+      <Navbar/>
+      <Routes>
+
+      	...
+      
+        <Route path='*' element={<NoMatch/>}/>
+      </Routes>
+    </div>
+  );
+}
+
+// NoMatch.js
+
+export const NoMatch = () => {
+  return <div>Page not found</div>;
+};
+
+```
+
+라우터의 경로에 `*`의 의미는 라우터가 존재하지 않을 때를 의미한다. 우리가 의도한 바와 일치하다. 이때 한번 존재하지 않는 라우터로 이동해 보자. 아래와 같은 결과를 얻을 것이다.
+
+![image-20220120211240078](README.assets/image-20220120211240078.png)
+
