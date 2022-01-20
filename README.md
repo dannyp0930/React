@@ -24,6 +24,7 @@ React 공부용 Repository
 12. [create](#create)
 12. [update](#update)
 12. [delete](#delete)
+12. [function style's life cycle](#function-style's-life-cycle)
 12. [마치며](#마치며)
 
 
@@ -1272,6 +1273,136 @@ class App extends Component {
 ```
 
 `Control` 컴포넌트를 보자. mode의 값이 `delete`일 때와 아닐 때를 구분하여 수행한다. 아닐 경우에는 기존의 과정을 따르면 된다. 먼저 `_articles`에 기존의 요소를 복하하여 놓고 `window.confirm()` 명령어로 window 확인창을 띄우자. 괄호 안에 메시지를 입력할 수 있다. 다음으로 `.splice(시작 인덱스, 개수)` 명령어로 요소를 삭제해 준다. state의 모드와 articles를 저장해 주면 끝이난다.
+
+
+
+## function style's life cycle
+
+기존에는 `class` 타입으로 함수를 만들었다. 그렇다면 `function` 스타일은 어떠할까. 한번 시도해 보자. 그리고 라이프 사이클을 알아보자. 먼저 기본적인 코드를 올리겠다.
+
+```javascript
+import React, {useState, useEffect} from 'react';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <h1>Hellow World</h1>
+      <FuncComp initNumber={2}></FuncComp>
+    </div>
+  );
+}
+const funcStyle = 'color:blue';
+var funcId = 0;
+function FuncComp(props) {
+  const numberState = useState(props.initNumber);
+  const number = numberState[0];
+  const setNumber = numberState[1];
+  const [date, setDate] = useState(new Date().toString());
+  useEffect(function() {
+    console.log('%cfunc => useEffect '+(+funcId) , funcStyle);
+  });
+
+  console.log('%cfunc => render '+(++funcId) , funcStyle);
+  return (
+    <div className="container">
+      <h2>function style component</h2>
+      <p>Number : {number}</p>
+      <p>date : {date}</p>
+      <input
+        type="button"
+        value="random"
+        onClick={
+          function() {
+            setNumber(Math.random());
+          }
+        }
+      />
+      <input
+        type="button"
+        value="date"
+        onClick={
+          function() {
+            setDate(new Date().toString());
+          }
+        }
+      />
+    </div>
+  )
+}
+
+export default App;
+```
+
+
+
+![image-20220120114512784](README.assets/image-20220120114512784.png)
+
+function 스타일로 컴포넌트를 생성하였다. `random` 또는 `date` 버튼을 누르면 임의의 숫자값을 보여주고, `date` 버튼을 누르면 현재 시간을 보여준다.
+
+콘솔창을 보면 render가 된 이후 `useEffect`란 함수가 실행됨을 알 수 있다. 그리고 컴포넌트가 업데이트 될 때 또한 실행된다. 그렇다면 이것이 무엇을 의미 할까? `useEffect` 함수를 다음과 같이 변경해 보자.
+
+```javascript
+  useEffect(function() {
+    console.log('%cfunc => useEffect '+(+funcId) , funcStyle);
+    document.title = number + ' : ' + date;
+  });
+```
+
+함수에 문서의 제목을 number와 date로 만드는 기능을 추가해 줬다. 변경되는 점을 보자.
+
+### render
+
+![image-20220120114841027](README.assets/image-20220120114841027.png)
+
+
+
+### random
+
+![image-20220120114908238](README.assets/image-20220120114908238.png)
+
+이처럼 차이를 보인다. 즉 useEffect의 역할은 컴포넌트 자체와 관련되지 않은 부분을 작성하거나 변경할 때 사용되는 것이다. 이를 `side effect` 라고 한다.
+
+
+
+```javascript
+  useEffect(function() {
+    console.log('%cfunc => useEffect '+(+funcId) , funcStyle);
+    document.title = number + ' : ' + date;
+    return function() {
+      console.log('%cfunc => useEffect return '+(+funcId) , funcStyle);
+    }
+  });
+```
+
+만약 위 코드처럼 `useEffect` 내부의 `return` 값을 주면 어떻게 될까?
+
+![image-20220120131339360](README.assets/image-20220120131339360.png)
+
+처음 렌더링 됐을 때는 호출이 되지 않지만 `random` 또는 `date` 버튼을 눌렀을 때, `useEffect`의 `return`이 먼저 수행됨을 알 수 있다.
+
+이제 useEffect 함수가 값이 변경되었을 때만 작동하도록 만들어 보자. 먼저 함수를 다음과 같이 바꾸어 보자.
+
+```javascript
+  useEffect(function() {
+    console.log('%cfunc => useEffect number '+(+funcId) , funcStyle);
+    document.title = number;
+  }, [number]);
+```
+
+처음 렌더링 될 때는 아래와 같을 것이다.
+
+![image-20220120140654958](README.assets/image-20220120140654958.png)
+
+이 때 `random`을 클릭하여 number의 값을 변경시켜 보자.
+
+![image-20220120140727781](README.assets/image-20220120140727781.png)
+
+위와 같이 콜백함수가 잘 실행 된다. 이 때 `date`를 클릭하여 date값을 변경하면 어떻게 될까?
+
+![image-20220120140806307](README.assets/image-20220120140806307.png)
+
+이처럼 함수가 실행되지 않는다. `useEffect` 함수에 대괄호와 함께 인자를 넣어주면, 그 인자가 변경 될 때만 함수가 실행되게 할 수 있다. 이를 `skipping effect` 라고 한다.
 
 
 
