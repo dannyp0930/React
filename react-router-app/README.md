@@ -12,6 +12,7 @@ React Router를 학습해 보자
 1. [링크](#링크)
 1. [프로그래밍 방식 네비게이션](#프로그래밍-방식-네비게이션)
 1. [라우터가 없을 때](#라우터가-없을-때)
+1. [중첩 라우터](#중첩-라우터)
 
 
 
@@ -105,7 +106,7 @@ export const Nabar = () => {
   return (
     <nav>
       <Link to='/'>Home</Link>
-      <Link to='/about'>About</Link>
+      <Link to='about'>About</Link>
     </nav>
   )
 };
@@ -124,7 +125,7 @@ nav에 `Link` 컴포넌트를 삽입한다. 여기서 `to` 속성은 이 링크�
        <Navbar/>
        <Routes>
          <Route path='/' element={<Home/>}/>
-         <Route path='/about' element={<About/>}/>
+         <Route path='about' element={<About/>}/>
        </Routes>
      </div>
    );
@@ -167,7 +168,7 @@ export const Navbar = () => {
   return (
     <nav>
       <NavLink to='/'>Home</NavLink>
-      <NavLink to='/about'>About</NavLink>
+      <NavLink to='about'>About</NavLink>
     </nav>
   )
 };
@@ -230,7 +231,7 @@ function App() {
       
       	...
       
-        <Route path='/order-summary' element={<OrderSummary/>}/>
+        <Route path='order-summary' element={<OrderSummary/>}/>
       </Routes>
     </div>
   );
@@ -310,3 +311,147 @@ export const NoMatch = () => {
 
 ![image-20220120211240078](README.assets/image-20220120211240078.png)
 
+
+
+## 중첩 라우터
+
+중첩 라우터(Nested Routes)는 라우터로 이동한 곳에서 또 라우터를 사용하여 다른 곳으로 이동하는 기능을 뜻한다. 먼저 `products` 컴포넌트를 작성해 보자.
+
+```javascript
+// Products.js
+
+import { Link } from 'react-router-dom'
+
+export const Products = () => {
+  return (
+    <div>
+      <div>
+        <input type='search' placeholder='Search products'/>
+      </div>
+      <nav>
+        <Link to='featured'>Featured</Link>
+        <Link to='new'>New</Link>
+      </nav>
+    </div>
+  );
+};
+
+// App.js
+
+function App() {
+  return (
+    <div>
+      <Navbar/>
+      <Routes>
+
+      	...
+      
+        <Route path='products' element={<Products/>}/>
+      </Routes>
+    </div>
+  );
+}
+
+// Navbar.js
+
+  return (
+    <nav>
+		
+      ...
+      
+      <NavLink style={navLinkStyles} to='/products'>Products</NavLink>
+    </nav>
+  )
+```
+
+`Link` 컴포넌트를 사용하여 `feature`와 `new`로 이동할 수 있도록 하였다. 이전에 했던 방식이므로 자세한 설명은 생략한다. 그리고 최상단의 `navbar`에 차이점을 주기 위해 `index.css`를 변경시켜 주자.
+
+```css
+/* index.css */
+
+.primary-nav {
+  background-color: aliceblue;
+  padding: 16px 32px;
+}
+```
+
+```javascript
+// Navbar.js
+
+  return (
+    <nav className='primary-nav'>
+      
+      ...
+      
+    </nav>
+  )
+```
+
+
+
+이제 `featured`와 `new` 컴포넌트를 만들어주자.
+
+```javascript
+// FeaturedProducts.js
+
+export const FeaturedProducts = () => {
+  return <div>List of featured products</div>;
+};
+
+// NewProducts.js
+
+export const NewProducts = () => {
+  return <div>List of new products</div>;
+};
+```
+
+
+
+그리고 `App.js`와 `Products.js`를 변경해 주자.
+
+```javascript
+// App.js
+
+function App() {
+  return (
+    <div>
+      <Navbar/>
+      <Routes>
+      
+		...
+      
+        <Route path='products' element={<Products/>}>
+          <Route path='featured' element={<FeaturedProducts/>}/>
+          <Route path='new' element={<NewProducts/>}/>
+        </Route>
+      </Routes>
+    </div>
+  );
+
+// Products.js
+
+import { Link, Outlet } from 'react-router-dom'
+
+export const Products = () => {
+  return (
+    <div>
+      <div>
+        <input type='search' placeholder='Search products'/>
+      </div>
+      <nav>
+        <Link to='featured'>Featured</Link>
+        <Link to='new'>New</Link>
+      </nav>
+      <Outlet/>
+    </div>
+  );
+};
+```
+
+`App.js`를 보면 `products` 라우터 안에 다른 라우터들을 중첩시켜 보여 줄 수 있도록 하였다. 여기서 그치면 안되고, `Products.js`에 `Outlet`이라는 중첩 라우팅 요소를 보여주는 속성을 import해 주어야 한다.
+
+![image-20220121105630179](README.assets/image-20220121105630179.png)
+
+![image-20220121105640205](README.assets/image-20220121105640205.png)
+
+![image-20220121105645409](README.assets/image-20220121105645409.png)
