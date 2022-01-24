@@ -13,6 +13,7 @@ React Router를 학습해 보자
 1. [프로그래밍 방식 네비게이션](#프로그래밍-방식-네비게이션)
 1. [라우터가 없을 때](#라우터가-없을-때)
 1. [중첩 라우터](#중첩-라우터)
+1. [인덱스 라우터](#인덱스-라우터)
 
 
 
@@ -315,7 +316,7 @@ export const NoMatch = () => {
 
 ## 중첩 라우터
 
-중첩 라우터(Nested Routes)는 라우터로 이동한 곳에서 또 라우터를 사용하여 다른 곳으로 이동하는 기능을 뜻한다. 먼저 `products` 컴포넌트를 작성해 보자.
+`중첩 라우터(Nested Routes)`는 라우터로 이동한 곳에서 또 라우터를 사용하여 다른 곳으로 이동하는 기능을 뜻한다. 먼저 `products` 컴포넌트를 작성해 보자.
 
 ```javascript
 // Products.js
@@ -455,3 +456,38 @@ export const Products = () => {
 ![image-20220121105640205](README.assets/image-20220121105640205.png)
 
 ![image-20220121105645409](README.assets/image-20220121105645409.png)
+
+
+
+## 인덱스 라우터
+
+위의 중첩 라우터를 사용했을 때 `product`를 누르면 아무 내용도 보이지 않는다. 이를 보완하기 위해 처음 라우터로 이동하였을 때 보여줄 내용을 결정하는 것을 `인덱스 라우터(index route)` 라고 한다.
+
+```javascript
+// App.js
+
+function App() {
+  return (
+    <div>
+      <Navbar/>
+      <Routes>
+        
+      	...
+      
+        <Route path='products' element={<Products/>}>
+          <Route index element={<FeaturedProducts/>}/>
+          <Route path='featured' element={<FeaturedProducts/>}/>
+          <Route path='new' element={<NewProducts/>}/>
+        </Route>
+        <Route path='*' element={<NoMatch/>}/>
+      </Routes>
+    </div>
+  );
+}
+```
+
+간단하게 `product` 라우터에 `Route` 컴포넌트를 추가하고 속성값으로 `path` 대신 `index`를 주었다. 간단하게 인덱스 라우터를 만들 수 있다.
+
+![image-20220124193745697](README.assets/image-20220124193745697.png)
+
+![image-20220124193751839](README.assets/image-20220124193751839.png)
