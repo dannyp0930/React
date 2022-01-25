@@ -14,6 +14,7 @@ React Router를 학습해 보자
 1. [라우터가 없을 때](#라우터가-없을-때)
 1. [중첩 라우터](#중첩-라우터)
 1. [인덱스 라우터](#인덱스-라우터)
+1. [동적 라우터](#동적-라우터)
 
 
 
@@ -491,3 +492,77 @@ function App() {
 ![image-20220124193745697](README.assets/image-20220124193745697.png)
 
 ![image-20220124193751839](README.assets/image-20220124193751839.png)
+
+## 동적 라우터
+
+`동적 라우터(dynamic route)`는 현재 상태에 따라 페이지의 경로를 변경시켜준다.
+
+```javascript
+// App.js
+
+function App() {
+  return (
+    <div>
+      <Navbar/>
+      <Routes>
+      	
+      	...
+      
+        <Route path='users' element={<Users/>}>
+          <Route path=':userId' element={<UserDetails/>}/>
+          <Route path='admin' element={<Admin/>}/>
+        </Route>
+      </Routes>
+    </div>
+  );
+}
+```
+
+먼저 중첩 라우터로 `user` 컴포넌트 안에 `:userId` 값에 따라 이동할 수 있도록 하였다. 특수한 경우인 `admin` 경로로 이동할 경우도 고려해 주었다.
+
+
+
+```javascript
+// Users.js
+
+import { Outlet } from "react-router-dom";
+
+export const Users = () => {
+  return (
+    <div>
+      <h2>User page</h2>
+      <Outlet/>
+    </div>
+  );
+};
+
+// UserDetails.js
+
+export const UserDetails = () => {
+  return (
+    <div>
+      Detail about user
+      </div>
+  );
+};
+
+// Admin.js
+
+export const Admin = () => {
+  return (
+    <div>
+      Admin User
+    </div>
+  );
+};
+```
+
+이와 같이 설정해 주면 먼저 `users`로 이동하게 되면 기본 화면만 볼 수 있다. `user/1`, `user/2` 와 같이 임의의 경로로 이동하면 `userdetail`  페이지의 내용이 함께 보인다. `admin `으로 이동할 경우 특수한 페이지를 보여준다.
+
+![image-20220125165814450](README.assets/image-20220125165814450.png)
+
+![image-20220125165843288](README.assets/image-20220125165843288.png)
+
+![image-20220125165826244](README.assets/image-20220125165826244.png)
+
+![image-20220125165833571](README.assets/image-20220125165833571.png)
