@@ -15,6 +15,7 @@ React Router를 학습해 보자
 1. [중첩 라우터](#중첩-라우터)
 1. [인덱스 라우터](#인덱스-라우터)
 1. [동적 라우터](#동적-라우터)
+1. [URL Parmas](#URL-Parmas)
 
 
 
@@ -566,3 +567,28 @@ export const Admin = () => {
 ![image-20220125165826244](README.assets/image-20220125165826244.png)
 
 ![image-20220125165833571](README.assets/image-20220125165833571.png)
+
+## URL Params
+
+이제 URL Params를 통해 URL 변경에 따라 다르게 렌더링해서 페이지를 보여주자. 아래와 같이 `useParmas`로 구현할 수 있다.
+
+```java
+// UserDetail.js
+
+import { useParams } from "react-router-dom";
+
+export const UserDetails = () => {
+  const { userId } = useParams()
+  return (
+    <div>
+      Detail about user {userId}
+      </div>
+  );
+};
+```
+
+![image-20220127142523135](README.assets/image-20220127142523135.png)
+
+![image-20220127142530486](README.assets/image-20220127142530486.png)
+
+![image-20220127142537862](README.assets/image-20220127142537862.png)
